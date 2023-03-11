@@ -19,30 +19,45 @@ def poyavlenie():
     print(fish)
 
 
-@wrap.on_mouse_down(wrap.BUTTON_RIGHT)
-def fishfood(pos_x, pos_y):
+@wrap.on_mouse_down(wrap.BUTTON_RIGHT,wrap.BUTTON_MIDDLE)
+def fishfood(pos_x, pos_y, button):
     global pf
-    if pf == None:
-        if wrap.sprite.is_collide_point(corm1, pos_x, pos_y):
-            pf = corm1
-        if wrap.sprite.is_collide_point(corm2, pos_x, pos_y):
-            pf = corm2
-        return
-    wrap.sprite.set_angle(pf, 345)
-    if pf == corm1:
-        food1("c1", corm1, 0, 8)
-        food1("c1", corm1, 5, 11)
-        food1("c1", corm1, -4, 9)
-    if pf == corm2:
-        food1("c2", corm2, 1, 6)
-        food1("c2", corm2, 8, 10)
-        food1("c2", corm2, -6, 14)
+    if button == wrap.BUTTON_RIGHT:
+        if pf == None:
+            if wrap.sprite.is_collide_point(corm1, pos_x, pos_y):
+                pf = corm1
+            if wrap.sprite.is_collide_point(corm2, pos_x, pos_y):
+                pf = corm2
+            return
+        wrap.sprite.set_angle(pf, 345)
+        if pf == corm1:
+            food1("c1", corm1, 0, 8)
+            food1("c1", corm1, 5, 11)
+            food1("c1", corm1, -4, 9)
+        if pf == corm2:
+            food1("c2", corm2, 1, 6)
+            food1("c2", corm2, 8, 10)
+            food1("c2", corm2, -6, 14)
+    #else:
+
+
 
 
 @wrap.on_mouse_up(wrap.BUTTON_RIGHT)
 def ugol():
     if pf != None:
         wrap.sprite.set_angle(pf, 90)
+
+@wrap.always(50)
+def move_food():
+    for f in food:
+        if wrap.sprite.is_collide_sprite(f["id"],water):
+            wrap.sprite.move(f["id"], 0, f["speed"])
+        else:
+            wrap.sprite.move(f["id"], 0, 9)
+        if wrap.sprite.get_bottom(f["id"]) >= 800:
+            wrap.sprite.move_bottom_to(f["id"],800)
+            food.remove(f)
 
 
 @wrap.on_key_down(wrap.K_ESCAPE)
@@ -68,7 +83,7 @@ def peretaskivanie(pos_x, pos_y):
 def food1(tag, banka, x, y):
     ffood = wrap.sprite.add("aqua", wrap.sprite.get_x(banka) + x, wrap.sprite.get_bottom(banka) + y, "fish food granula")
     wrap.sprite.set_size(ffood, 11, 10)
-    speed = random.randint(1, 2)
+    speed = random.randint(2, 3)
     sitnost = random.randint(2, 4)
     fff = {"id": ffood, "speed": speed, "sitnost": sitnost, "tag": tag}
     food.append(fff)
