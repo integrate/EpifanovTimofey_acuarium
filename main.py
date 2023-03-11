@@ -7,6 +7,7 @@ water = wrap.sprite.add("aqua", 400, 550, "water")
 corm1 = wrap.sprite.add("aqua", 500, 200, "fishfood")
 corm2 = wrap.sprite.add('aqua', 580, 200, "fishfood2")
 fish = []
+food = []
 pf = None
 
 
@@ -28,6 +29,14 @@ def fishfood(pos_x, pos_y):
             pf = corm2
         return
     wrap.sprite.set_angle(pf, 345)
+    if pf == corm1:
+        food1("c1", corm1, 0, 8)
+        food1("c1", corm1, 5, 11)
+        food1("c1", corm1, -4, 9)
+    if pf == corm2:
+        food1("c2", corm2, 1, 6)
+        food1("c2", corm2, 8, 10)
+        food1("c2", corm2, -6, 14)
 
 
 @wrap.on_mouse_up(wrap.BUTTON_RIGHT)
@@ -53,7 +62,16 @@ def peretaskivanie(pos_x, pos_y):
     if pf != None:
         wrap.sprite.move_to(pf, pos_x, pos_y)
         if wrap.sprite.get_bottom(pf) > wrap.sprite.get_top(water):
-            wrap.sprite.move_bottom_to(pf,wrap.sprite.get_top(water))
+            wrap.sprite.move_bottom_to(pf, wrap.sprite.get_top(water))
+
+
+def food1(tag, banka, x, y):
+    ffood = wrap.sprite.add("aqua", wrap.sprite.get_x(banka) + x, wrap.sprite.get_bottom(banka) + y, "fish food granula")
+    wrap.sprite.set_size(ffood, 11, 10)
+    speed = random.randint(1, 2)
+    sitnost = random.randint(2, 4)
+    fff = {"id": ffood, "speed": speed, "sitnost": sitnost, "tag": tag}
+    food.append(fff)
 
 
 @wrap.always(45)
@@ -66,7 +84,7 @@ def move():
             y = wrap.sprite.get_y(f["id"])
             wrap.sprite.set_reverse_x(f["id"], not wrap.sprite.get_reverse_x(f["id"]))
             wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
-            wrap.sprite.move_left_to(f["id"],0)
+            wrap.sprite.move_left_to(f["id"], 0)
         if wrap.sprite.get_right(f["id"]) >= 800:
             f["skorostx"] = -f["skorostx"]
             x = wrap.sprite.get_x(f["id"])
