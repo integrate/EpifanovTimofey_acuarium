@@ -60,12 +60,20 @@ def peretaskivanie(pos_x, pos_y):
 def move():
     for f in fish:
         wrap.sprite.move(f["id"], f["skorostx"], f["skorosty"])
-        if wrap.sprite.get_right(f["id"]) >= 800 or wrap.sprite.get_left(f["id"]) <= 0:
+        if wrap.sprite.get_left(f["id"]) <= 0:
             f["skorostx"] = -f["skorostx"]
             x = wrap.sprite.get_x(f["id"])
             y = wrap.sprite.get_y(f["id"])
             wrap.sprite.set_reverse_x(f["id"], not wrap.sprite.get_reverse_x(f["id"]))
             wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
+            wrap.sprite.move_left_to(f["id"],0)
+        if wrap.sprite.get_right(f["id"]) >= 800:
+            f["skorostx"] = -f["skorostx"]
+            x = wrap.sprite.get_x(f["id"])
+            y = wrap.sprite.get_y(f["id"])
+            wrap.sprite.set_reverse_x(f["id"], not wrap.sprite.get_reverse_x(f["id"]))
+            wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
+            wrap.sprite.move_right_to(f["id"], 800)
         if wrap.sprite.get_bottom(f["id"]) >= 800:
             f["skorosty"] = -f["skorosty"]
             x = wrap.sprite.get_x(f["id"])
