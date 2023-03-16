@@ -47,6 +47,8 @@ def fishfood(pos_x, pos_y, button):
 def ugol():
     if pf != None:
         wrap.sprite.set_angle(pf, 90)
+        if wrap.sprite.get_bottom(pf) > wrap.sprite.get_top(water):
+            wrap.sprite.move_bottom_to(pf, wrap.sprite.get_top(water))
 
 @wrap.always(50)
 def move_food():
