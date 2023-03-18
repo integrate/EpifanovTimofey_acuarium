@@ -1,4 +1,3 @@
-#p = range(10,20,3)
-p = range(9999999999)
+p = range(10,20,3)
 for f in p:
     print(f)
