@@ -18,7 +18,6 @@ def poyavlenie():
     a = wrap.sprite.add("fish", 100, 700, random.choice(
         ["fish purple1", "fish pink1", "fish blue1", "fish colored1", "fish colored2", "fish colored3"]))
     fish.append({"id": a, "skorostx": random.randint(2, 5), "skorosty": random.randint(2, 5)})
-    print(fish)
 
 
 @wrap.on_mouse_down(wrap.BUTTON_RIGHT, wrap.BUTTON_MIDDLE)
@@ -100,26 +99,34 @@ def food1(tag, banka, x, y):
 
 def otbivka(f):
     if wrap.sprite.get_left(f["id"]) <= 0:
-        f["skorostx"] = -f["skorostx"]
-        wrap.sprite.set_reverse_x(f["id"], not wrap.sprite.get_reverse_x(f["id"]))
+        f["skorostx"] = abs(f["skorostx"])
+        wrap.sprite.set_reverse_x(f["id"], False)
+        x = wrap.sprite.get_x(f["id"])
+        y = wrap.sprite.get_y(f["id"])
+        wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
         wrap.sprite.move_left_to(f["id"], 0)
 
     if wrap.sprite.get_right(f["id"]) >= 800:
-        f["skorostx"] = -f["skorostx"]
-        wrap.sprite.set_reverse_x(f["id"], not wrap.sprite.get_reverse_x(f["id"]))
+        f["skorostx"] = -abs(f["skorostx"])
+        wrap.sprite.set_reverse_x(f["id"], True)
+        x = wrap.sprite.get_x(f["id"])
+        y = wrap.sprite.get_y(f["id"])
+        wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
         wrap.sprite.move_right_to(f["id"], 800)
 
     if wrap.sprite.get_bottom(f["id"]) >= 800:
-        f["skorosty"] = -f["skorosty"]
+        f["skorosty"] = -abs(f["skorosty"])
+        x = wrap.sprite.get_x(f["id"])
+        y = wrap.sprite.get_y(f["id"])
+        wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
         wrap.sprite.move_bottom_to(f["id"], 800)
 
     if wrap.sprite.get_top(f["id"]) <= wrap.sprite.get_top(water) - 10:
-        f["skorosty"] = -f["skorosty"]
+        f["skorosty"] = abs(f["skorosty"])
+        x = wrap.sprite.get_x(f["id"])
+        y = wrap.sprite.get_y(f["id"])
+        wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
         wrap.sprite.move_top_to(f["id"], wrap.sprite.get_top(water) - 10)
-
-    x = wrap.sprite.get_x(f["id"])
-    y = wrap.sprite.get_y(f["id"])
-    wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
 
 
 def random_move(f):
@@ -132,12 +139,19 @@ def random_move(f):
 def move_eat(f):
     r = food[0]["id"]
     if food[0]["tag"] == "c2" and wrap.sprite.get_costume(f["id"]) == "fish colored1" or wrap.sprite.get_costume(
-            f["id"]) == "fish purple":
+            f["id"]) == "fish purple1":
         x = wrap.sprite.get_x(r)
         y = wrap.sprite.get_y(r)
+        x1 = wrap.sprite.get_x(f["id"])
         sk = math.sqrt(f["skorostx"] ** 2 + f["skorosty"] ** 2)
+        if x < x1:
+            wrap.sprite.set_reverse_x(f["id"], True)
+        if x > x1:
+            wrap.sprite.set_reverse_x(f["id"], False)
         wrap.sprite.set_angle_to_point(f["id"], x, y)
         wrap.sprite.move_at_angle_point(f["id"], x, y, sk * 1.5)
+
+
     # if
     #     random_move(f["id"])
     #
@@ -149,6 +163,7 @@ def move_eat(f):
     if wrap.sprite.is_collide_sprite(f["id"], r):
         wrap.sprite.remove(r)
         wrap.sprite.set_height_proportionally(f["id"], wrap.sprite.get_height(f["id"]) + food[0]["sitnost"])
+        # wrap.sprite.set_reverse_x(f["id"], False)
         del food[0]
 
 
