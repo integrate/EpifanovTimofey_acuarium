@@ -136,45 +136,53 @@ def random_move(f):
     wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
 
 
+def move_and_eat(f, r):
+    x = wrap.sprite.get_x(r["id"])
+    y = wrap.sprite.get_y(r["id"])
+    x1 = wrap.sprite.get_x(f["id"])
+    sk = math.sqrt(f["skorostx"] ** 2 + f["skorosty"] ** 2)
+    if x < x1:
+        wrap.sprite.set_reverse_x(f["id"], True)
+    if x > x1:
+        wrap.sprite.set_reverse_x(f["id"], False)
+    wrap.sprite.set_angle_to_point(f["id"], x, y)
+    wrap.sprite.move_at_angle_point(f["id"], x, y, sk * 1.5)
+    if wrap.sprite.is_collide_sprite(f["id"], r["id"]):
+        wrap.sprite.remove(r["id"])
+        food.remove(r)
+        wrap.sprite.set_height_proportionally(f["id"], wrap.sprite.get_height(f["id"]) + r["sitnost"])
+
+
 def move_eat(f):
-    r = food[0]["id"]
-    if food[0]["tag"] == "c2" and wrap.sprite.get_costume(f["id"]) == "fish colored1" or wrap.sprite.get_costume(
-            f["id"]) == "fish purple1":
-        x = wrap.sprite.get_x(r)
-        y = wrap.sprite.get_y(r)
-        x1 = wrap.sprite.get_x(f["id"])
-        sk = math.sqrt(f["skorostx"] ** 2 + f["skorosty"] ** 2)
-        if x < x1:
-            wrap.sprite.set_reverse_x(f["id"], True)
-        if x > x1:
-            wrap.sprite.set_reverse_x(f["id"], False)
-        wrap.sprite.set_angle_to_point(f["id"], x, y)
-        wrap.sprite.move_at_angle_point(f["id"], x, y, sk * 1.5)
+    c2f = False
+    for y in food:
+        if y["tag"] == "c2":
+            c2f = y
+            break
+    c1f = False
+    for y in food:
+        if y["tag"] == "c1":
+            c1f = y
+            break
+
+    if c2f != False and (wrap.sprite.get_costume(f["id"]) == "fish colored1" or wrap.sprite.get_costume(
+            f["id"]) == "fish purple1"):
+        move_and_eat(f, c2f)
+
+    elif c1f != False and wrap.sprite.get_costume(f["id"]) != "fish colored1" and wrap.sprite.get_costume(
+            f["id"]) != "fish purple1":
+        move_and_eat(f, c1f)
+    else:
+        random_move(f)
 
 
-    # if
-    #     random_move(f["id"])
-    #
-    # x = wrap.sprite.get_x(r)
-    # y = wrap.sprite.get_y(r)
-    # sk = math.sqrt(f["skorostx"] ** 2 + f["skorosty"] ** 2)
-    # wrap.sprite.set_angle_to_point(f["id"], x, y)
-    # wrap.sprite.move_at_angle_point(f["id"], x, y, sk * 1.5)
-    if wrap.sprite.is_collide_sprite(f["id"], r):
-        wrap.sprite.remove(r)
-        wrap.sprite.set_height_proportionally(f["id"], wrap.sprite.get_height(f["id"]) + food[0]["sitnost"])
-        # wrap.sprite.set_reverse_x(f["id"], False)
-        del food[0]
 
 
 @wrap.always(45)
 def move():
     global kroshka
     for f in fish:
-        if len(food) == 0:
-            random_move(f)
-        else:
-            move_eat(f)
+        move_eat(f)
         otbivka(f)
 
 
