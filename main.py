@@ -13,11 +13,14 @@ food = []
 pf = None
 
 
-@wrap.on_key_down(wrap.K_SPACE)
 def poyavlenie():
     a = wrap.sprite.add("fish", 100, 700, random.choice(
         ["fish purple1", "fish pink1", "fish blue1", "fish colored1", "fish colored2", "fish colored3"]))
-    fish.append({"id": a, "skorostx": random.randint(2, 5), "skorosty": random.randint(2, 5)})
+    fish.append({"id": a, "skorostx": random.randint(2, 5), "skorosty": random.randint(2, 5),
+                 "razmer": wrap.sprite.get_height(a)})
+
+
+poyavlenie()
 
 
 @wrap.on_mouse_down(wrap.BUTTON_RIGHT, wrap.BUTTON_MIDDLE)
@@ -136,6 +139,12 @@ def random_move(f):
     wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
 
 
+def razmnoszenie(f):
+    if wrap.sprite.get_height(f["id"]) > f["razmer"] * 1.4:
+        poyavlenie()
+        wrap.sprite.set_height_proportionally(f["id"], f["razmer"])
+
+
 def move_and_eat(f, r):
     x = wrap.sprite.get_x(r["id"])
     y = wrap.sprite.get_y(r["id"])
@@ -151,6 +160,7 @@ def move_and_eat(f, r):
         wrap.sprite.remove(r["id"])
         food.remove(r)
         wrap.sprite.set_height_proportionally(f["id"], wrap.sprite.get_height(f["id"]) + r["sitnost"])
+        razmnoszenie(f)
 
 
 def move_eat(f):
@@ -174,8 +184,6 @@ def move_eat(f):
         move_and_eat(f, c1f)
     else:
         random_move(f)
-
-
 
 
 @wrap.always(45)
