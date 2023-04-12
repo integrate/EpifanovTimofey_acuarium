@@ -2,7 +2,7 @@ import math
 
 import wrap, random
 
-wrap.world.create_world(800, 800)
+wrap.world.create_world(800, 600)
 wrap.world.set_back_color(255, 255, 255)
 wrap.add_sprite_dir("sprite")
 water = wrap.sprite.add("aqua", 400, 550, "water")
@@ -14,7 +14,7 @@ pf = None
 
 
 def poyavlenie():
-    a = wrap.sprite.add("fish", 100, 700, random.choice(
+    a = wrap.sprite.add("fish", 100, 500, random.choice(
         ["fish purple1", "fish pink1", "fish blue1", "fish colored1", "fish colored2", "fish colored3"]))
     fish.append({"id": a, "skorostx": random.randint(2, 5), "skorosty": random.randint(2, 5),
                  "razmer": wrap.sprite.get_height(a)})
@@ -117,12 +117,12 @@ def otbivka(f):
         wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
         wrap.sprite.move_right_to(f["id"], 800)
 
-    if wrap.sprite.get_bottom(f["id"]) >= 800:
+    if wrap.sprite.get_bottom(f["id"]) >= 600:
         f["skorosty"] = -abs(f["skorosty"])
         x = wrap.sprite.get_x(f["id"])
         y = wrap.sprite.get_y(f["id"])
         wrap.sprite.set_angle_to_point(f["id"], x + f["skorostx"], y + f["skorosty"])
-        wrap.sprite.move_bottom_to(f["id"], 800)
+        wrap.sprite.move_bottom_to(f["id"], 600)
 
     if wrap.sprite.get_top(f["id"]) <= wrap.sprite.get_top(water) - 10:
         f["skorosty"] = abs(f["skorosty"])
